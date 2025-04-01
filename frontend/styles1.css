@@ -1,0 +1,95 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f6fc; /* สีฟ้าอ่อน */
+}
+header {
+    background-color: #2980b9; /* สีฟ้าเข้ม */
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
+h1 {
+    margin: 0;
+}
+.btn-back {
+    padding: 5px 10px;
+    border: 2px solid #2c3e50; /* เส้นขอบสีเข้ม */
+    border-radius: 5px;
+    background-color: transparent;
+    color: #2c3e50; /* สีเข้ม */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-back:hover {
+    background-color: #2c3e50; /* เปลี่ยนสีพื้นหลัง */
+    color: #fff; /* เปลี่ยนสีตัวอักษร */
+}
+#operation_report {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.operation_report-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.operation_report-item button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db; /* สีฟ้าอ่อน */
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.operation_report-item button:hover {
+    background-color: #2980b9; /* เมื่อเม้าส์ชี้ที่ปุ่ม สีพื้นหลังจะเปลี่ยน */
+}
+
+
+/*ปุ่ม */
+/* Edit Button */
+.edit-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+/* Delete Button */
+.delete-button {
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #d32f2f;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        p {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>สมัครสมาชิก</h2>
+    <input type="text" id="username" placeholder="ชื่อผู้ใช้">
+    <input type="password" id="password" placeholder="รหัสผ่าน">
+    <input type="text" id="fullname" placeholder="ชื่อเต็ม">
+    <object id="role">
+    </select>
+    <select id="department">
+        <option value="1">แผนก IT</option>
+        <option value="2">บัญชี</option>
+        <option value="3">HR</option>
+        <option value="4">การตลาด</option>
+        <option value="5">การขาย</option>
+        <option value="6">การผลิต</option>
+        <option value="7">การบริการลูกค้า</option>
+        <option value="8">การจัดซื้อ</option>
+        <option value="9">การขนส่ง</option>
+        <option value="10">การวิจัยและพัฒนา</option>
+        <option value="11">การควบคุมคุณภาพ</option>
+        <option value="12">การบริหารจัดการ</option>
+    </select>
+    <button onclick="register()">สมัครสมาชิก</button>
+    <p id="message"></p>
+</div>
+
+<script>
+    async function register() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const fullname = document.getElementById('fullname').value.trim();
+        const role = document.getElementById('role').value;
+        const department_id = document.getElementById('department').value;
+
+        if (!username || !password || !fullname) {
+            document.getElementById('message').textContent = 'กรุณากรอกข้อมูลให้ครบ';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, fullname, role, department_id })
+            });
+
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+
+            if (response.ok) {
+                alert('สมัครสมาชิกสำเร็จ!');
+                window.location.href = 'login.html';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('message').textContent = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+        }
+    }
+</script>
+
+</body>
+</html>

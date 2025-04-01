@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+<body>
+
+<h2>เข้าสู่ระบบ</h2>
+<input type="text" id="username" placeholder="ชื่อผู้ใช้" />
+<input type="password" id="password" placeholder="รหัสผ่าน" />
+<button onclick="login()">เข้าสู่ระบบ</button>
+
+<p id="loginMessage" class="error" style="color:red;"></p>
+<!-- ✅ ปุ่มไปหน้า Register -->
+<button onclick="goToRegister()" style="background-color: #008CBA;">สมัครสมาชิก</button>
+<script>
+    function goToRegister() {
+        window.location.href = 'register.html';  // เปลี่ยนเส้นทางไปยังหน้า Register
+    }
+</script>
+<script>
+    async function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const loginMessage = document.getElementById('loginMessage');
+
+        // เคลียร์ข้อความก่อนเริ่ม
+        loginMessage.textContent = '';
+
+        if (!username || !password) {
+            loginMessage.textContent = 'กรุณากรอกข้อมูลให้ครบ';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            console.log('Login Response:', result); // ตรวจสอบข้อมูลที่ได้จากเซิร์ฟเวอร์
+
+            if (response.ok) {
+                if (!result.token) {
+                    loginMessage.textContent = 'ไม่พบ Token ในการตอบกลับ';
+                    return;
+                }
+
+                localStorage.setItem('token', result.token);
+
+                try {
+                    const user = jwt_decode(result.token);
+                    console.log('Decoded User:', user);
+
+                    if (!user.role) {
+                        loginMessage.textContent = 'Token ไม่ถูกต้อง: ไม่มีข้อมูล role';
+                        return;
+                    }
+
+                    if (user.role === 'ผู้ดูแลระบบ') {
+                        window.location.href = 'admin.html';  // ไปยังหน้าแอดมิน
+                    } else {
+                        window.location.href = 'employee.html';  // ไปยังหน้าพนักงาน
+                    }
+                } catch (decodeError) {
+                    console.error('JWT Decode Error:', decodeError);
+                    loginMessage.textContent = 'Token ไม่ถูกต้อง';
+                }
+            } else {
+                loginMessage.textContent = result.message || 'เข้าสู่ระบบไม่สำเร็จ';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            loginMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
+        }
+    }
+</script>
+
+
+
+</body>
+</html>

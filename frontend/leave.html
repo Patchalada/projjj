@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าการลางาน</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>แบบฟอร์มขอลางาน</h2>
+
+<label for="leaveDate">วันที่ลา:</label>
+<input type="date" id="leaveDate" required>
+
+<label for="leaveType">ประเภทการลา:</label>
+<select id="leaveType">
+    <option value="ลาป่วย">ลาป่วย</option>
+    <option value="ลากิจ">ลากิจ</option>
+    <option value="ลาพักร้อน">ลาพักร้อน</option>
+</select>
+
+<label for="reason">เหตุผล:</label>
+<textarea id="reason" rows="4" required></textarea>
+
+<button onclick="submitLeaveRequest()">ส่งคำขอลา</button>
+<p id="leaveMessage" style="color:red;"></p>
+
+<h3>ข้อมูลการลา</h3>
+<table id="leaveTable">
+    <thead>
+        <tr>
+            <th>วันที่ลา</th>
+            <th>ประเภทการลา</th>
+            <th>เหตุผล</th>
+            <th>สถานะ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ข้อมูลการลาจะมาแสดงที่นี่ -->
+    </tbody>
+</table>
+
+<script>
+    async function submitLeaveRequest() {
+        const leaveDate = document.getElementById('leaveDate').value;
+        const leaveType = document.getElementById('leaveType').value;
+        const reason = document.getElementById('reason').value;
+        const userId = jwt_decode(localStorage.getItem('token')).userId;
+
+        if (!leaveDate || !reason) {
+            document.getElementById('leaveMessage').textContent = 'กรุณากรอกข้อมูลให้ครบ';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/leaves', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                },
+                body: JSON.stringify({ user_id: userId, leave_date: leaveDate, leave_type: leaveType, reason })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('leaveMessage').style.color = 'green';
+                document.getElementById('leaveMessage').textContent = 'ส่งคำขอลาสำเร็จ';
+                loadLeaveRequests();  // รีเฟรชข้อมูลการลา
+            } else {
+                document.getElementById('leaveMessage').textContent = result.message;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    // ฟังก์ชันดึงข้อมูลการลาเฉพาะของผู้ใช้ที่ล็อกอิน
+    async function loadLeaveRequests() {
+        const userId = jwt_decode(localStorage.getItem('token')).userId;
+
+        try {
+            const response = await fetch(`http://localhost:8000/leaves/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const result = await response.json();
+
+            const leaveTableBody = document.querySelector('#leaveTable tbody');
+            leaveTableBody.innerHTML = ''; // ลบข้อมูลเก่าออก
+
+            if (result.length > 0) {
+                result.forEach(leave => {
+                    const row = document.createElement('tr');
+
+                    // ตรวจสอบและแปลงวันที่ลาให้แสดงในรูปแบบที่ต้องการ
+                    const leaveDate = new Date(leave.leave_date);
+                    const formattedDate = leaveDate.toLocaleDateString('th-TH', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${leave.leave_type}</td>
+                        <td>${leave.reason}</td>
+                        <td>${leave.status}</td>
+                    `;
+                    leaveTableBody.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="4" style="text-align:center;">ไม่มีข้อมูลการลา</td>';
+                leaveTableBody.appendChild(row);
+            }
+        } catch (error) {
+            console.error('Error fetching leave requests:', error);
+        }
+    }
+
+    // เรียกฟังก์ชันเมื่อโหลดหน้าเว็บเพื่อแสดงข้อมูลการลา
+    window.onload = loadLeaveRequests;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</body>
+</html>

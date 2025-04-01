@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Admin</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            padding: 10px 20px;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 10px 15px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+        }
+        .navbar-right {
+            float: right;
+        }
+        .active {
+            border-bottom: 2px solid #fff; /* ขีดใต้เมื่อเลือก */
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="admin.html" id="dashboard-link">แดชบอร์ด</a>
+    <a href="manage_leaves.html" id="manage-leaves-link">จัดการการลา</a>
+    <div class="navbar-right">
+        <a href="#" onclick="logout()">ออกจากระบบ</a>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        localStorage.removeItem('token');  // ลบ Token ออกจาก localStorage
+        alert('ออกจากระบบเรียบร้อย');
+        window.location.href = 'login.html';  // เปลี่ยนเส้นทางไปหน้าเข้าสู่ระบบ
+    }
+
+    // ตรวจสอบหน้าและเพิ่ม class "active" ให้กับลิงก์ที่ตรงกับหน้า
+    window.onload = function() {
+        const currentPath = window.location.pathname;
+        
+        if (currentPath.includes("admin.html")) {
+            document.getElementById("dashboard-link").classList.add("active");
+        } else if (currentPath.includes("manage_leaves.html")) {
+            document.getElementById("manage-leaves-link").classList.add("active");
+        }
+    }
+</script>
+
+</body>
+</html>

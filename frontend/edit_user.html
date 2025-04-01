@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขข้อมูลผู้ใช้</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>แก้ไขข้อมูลผู้ใช้</h2>
+
+<form id="editUserForm">
+    <label for="username">ชื่อผู้ใช้:</label>
+    <input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+
+    <label for="password">รหัสผ่าน:</label>
+    <input type="password" id="password" placeholder="รหัสผ่าน" required>
+
+    <label for="fullname">ชื่อเต็ม:</label>
+    <input type="text" id="fullname" placeholder="ชื่อเต็ม" required>
+
+    <label for="role">บทบาท:</label>
+    <select id="role" required>
+        <option value="พนักงาน">พนักงาน</option>
+        <option value="ผู้ดูแลระบบ">ผู้ดูแลระบบ</option>
+    </select>
+    
+
+    <label for="department">แผนก:</label>
+    <select id="department">
+        <option value="">ไม่ระบุ</option>
+        <option value="1">แผนก IT</option>
+        <option value="2">บัญชี</option>
+        <option value="3">HR</option>
+        <option value="4">การตลาด</option>
+        <option value="5">การขาย</option>
+        <option value="6">การผลิต</option>
+        <option value="7">การบริการลูกค้า</option>
+        <option value="8">การจัดซื้อ</option>
+        <option value="9">การขนส่ง</option>
+        <option value="10">การวิจัยและพัฒนา</option>
+        <option value="11">การควบคุมคุณภาพ</option>
+        <option value="12">การบริหารจัดการ</option>
+    </select>
+
+    <button type="submit">บันทึกการเปลี่ยนแปลง</button>
+</form>
+
+<p id="errorMessage" style="color: red;"></p>
+<p id="successMessage" style="color: green;"></p>
+
+<script>
+    // ฟังก์ชันโหลดข้อมูลผู้ใช้จาก URL
+    async function loadUserData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id'); // ดึงค่า id จาก URL
+
+        try {
+            const response = await fetch(`http://localhost:8000/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('username').value = result.username;
+                document.getElementById('fullname').value = result.fullname;
+                document.getElementById('role').value = result.role;
+                document.getElementById('department').value = result.department ? result.department.id : ''; // แสดงแผนก (หากมี)
+            } else {
+                document.getElementById('errorMessage').textContent = result.message || 'ไม่สามารถโหลดข้อมูลได้';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('errorMessage').textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูล';
+        }
+    }
+
+    // ฟังก์ชันบันทึกการแก้ไขข้อมูล
+    document.getElementById('editUserForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const fullname = document.getElementById('fullname').value.trim();
+    const role = document.getElementById('role').value;  // ตรงนี้จะส่งค่า 'พนักงาน' หรือ 'ผู้ดูแลระบบ'
+    const department_id = document.getElementById('department').value || null;
+
+    // ตรวจสอบให้แน่ใจว่ามีการกรอกข้อมูลที่จำเป็น
+    if (!username || !password || !fullname) {
+        document.getElementById('errorMessage').textContent = 'กรุณากรอกข้อมูลให้ครบ';
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8000/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({ 
+                username, 
+                password, 
+                fullname, 
+                role,  // ส่งค่า 'พนักงาน' หรือ 'ผู้ดูแลระบบ'
+                department_id: department_id || null
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            document.getElementById('successMessage').textContent = 'ข้อมูลถูกอัปเดตสำเร็จ';
+            // รีเฟรชหน้าหลังจากบันทึกสำเร็จ
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            document.getElementById('errorMessage').textContent = result.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
+    }
+});
+
+
+    // เรียกฟังก์ชันโหลดข้อมูลเมื่อหน้าเว็บโหลด
+    window.onload = loadUserData;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+</body>
+</html>
