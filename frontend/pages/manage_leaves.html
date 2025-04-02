@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การจัดการการลา</title>
+    <link rel="stylesheet" href="../css/styles.css">  <!-- รวมสไตล์ทั่วไป -->
+</head>
+<body>
+
+<!-- ✅ โหลด Navbar จาก navadmin.html -->
+<div id="nav-placeholder"></div>
+
+<h2>การจัดการการลา</h2>
+<table id="leaveRequestsTable">
+    <thead>
+        <tr>
+            <th>ชื่อพนักงาน</th>
+            <th>ตำแหน่ง</th>
+            <th>ประเภทการลา</th>
+            <th>เหตุผล</th>
+            <th>วันที่ลา</th> <!-- เพิ่มคอลัมน์วันที่ลา -->
+            <th>สถานะ</th>
+            <th>อนุมัติ</th>
+            <th>ไม่อนุมัติ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ข้อมูลจะถูกเติมที่นี่ -->
+    </tbody>
+</table>
+
+<!-- แสดงวันที่ -->
+<div class="date" id="currentDate"></div>
+
+<script src="../js/manage_leaves.js"></script> <!-- เรียกใช้ไฟล์ JavaScript สำหรับการจัดการการลา -->
+</body>
+</html>

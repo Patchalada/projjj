@@ -1,0 +1,65 @@
+/* ตั้งค่าพื้นฐาน */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* กล่องเนื้อหากลางจอ */
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ปุ่ม */
+button {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+/* สีปุ่ม */
+button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:nth-of-type(2) {
+    background-color: #f44336;
+    color: white;
+}
+
+button:last-of-type {
+    background-color: #008CBA;
+    color: white;
+}
+
+/* ข้อความแจ้งเตือน */
+p {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ส่วนแสดงชื่อพนักงาน */
+#user-info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-weight: bold;
+}

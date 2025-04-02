@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>เข้าสู่ระบบ</h2>
+        <input type="text" id="username" placeholder="ชื่อผู้ใช้" />
+        <input type="password" id="password" placeholder="รหัสผ่าน" />
+        <button onclick="login()">เข้าสู่ระบบ</button>
+
+        <p id="loginMessage" class="error"></p>
+
+        <!-- ✅ ปุ่มไปหน้า Register -->
+        <button onclick="goToRegister()" class="register-btn">สมัครสมาชิก</button>
+    </div>
+
+    <script src="../js/login.js"></script>
+
+</body>
+</html>

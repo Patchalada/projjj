@@ -39,9 +39,9 @@ const initMySQL = async () => {
 
 app.post('/register', async (req, res) => {
     try {
-        const { username, password, fullname, role } = req.body;
+        const { username, password, fullname, role, department_id } = req.body;
 
-        if (!username || !password || !fullname) {
+        if (!username || !password || !fullname || !department_id) {
             return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบ' });
         }
 
@@ -52,8 +52,8 @@ app.post('/register', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await conn.query(
-            'INSERT INTO users (username, password, fullname, role) VALUES (?, ?, ?, ?)',
-            [username, hashedPassword, fullname, role || 'พนักงาน']
+            'INSERT INTO users (username, password, fullname, role, department_id) VALUES (?, ?, ?, ?, ?)',
+            [username, hashedPassword, fullname, role || 'พนักงาน', department_id]
         );
 
         res.status(201).json({ message: 'สมัครสมาชิกสำเร็จ' });
@@ -62,6 +62,7 @@ app.post('/register', async (req, res) => {
         res.status(500).json({ message: 'เกิดข้อผิดพลาดในการสมัครสมาชิก' });
     }
 });
+
 
 app.post('/login', async (req, res) => {
     try {
@@ -75,9 +76,14 @@ app.post('/login', async (req, res) => {
 
         if (!isPasswordValid) return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
 
-        // ✅ เพิ่ม `role` ลงไปใน JWT
+        // ✅ เพิ่ม `fullname` และ `role` ลงไปใน JWT
         const token = jwt.sign(
-            { userId: user.id, username: user.username, role: user.role }, // เพิ่ม role ตรงนี้
+            { 
+                userId: user.id, 
+                username: user.username, 
+                fullname: user.fullname, // เพิ่ม fullname
+                role: user.role          // เพิ่ม role
+            }, 
             JWT_SECRET_KEY,
             { expiresIn: '1h' }
         );
@@ -90,13 +96,22 @@ app.post('/login', async (req, res) => {
 });
 
 
+
 app.get('/attendance', verifyToken, async (req, res) => {
     try {
-        const [results] = await conn.query('SELECT * FROM attendance');
-        res.json(results);
+        const [users] = await conn.query(`
+            SELECT u.id, u.username, u.fullname, u.role, 
+                   d.name AS department, 
+                   DATE_FORMAT(a.check_in, '%Y-%m-%d %H:%i:%s') AS check_in_time, 
+                   DATE_FORMAT(a.check_out, '%Y-%m-%d %H:%i:%s') AS check_out_time
+            FROM users u
+            LEFT JOIN departments d ON u.department_id = d.id
+            LEFT JOIN attendance a ON u.id = a.user_id
+        `);
+        res.json(users);
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูลการลงเวลา' });
+        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้' });
     }
 });
 
@@ -185,23 +200,29 @@ app.post('/leaves/:id/deny', verifyToken, async (req, res) => {
 app.get('/leaves', verifyToken, async (req, res) => {
     try {
         const [results] = await conn.query(`
-            SELECT leaves.id, users.fullname, leaves.leave_type, leaves.reason, leaves.leave_date, leaves.status
+            SELECT 
+                leaves.id, 
+                users.fullname, 
+                COALESCE(departments.name, 'ไม่ระบุ') AS position, -- ✅ เพิ่มตำแหน่งจาก departments
+                leaves.leave_type, 
+                leaves.reason, 
+                leaves.leave_date, 
+                leaves.status
             FROM leaves
             JOIN users ON leaves.user_id = users.id
+            LEFT JOIN departments ON users.department_id = departments.id  -- ✅ เชื่อมตาราง departments
         `);
 
-        // ตรวจสอบว่าเรามีข้อมูลที่ต้องการหรือไม่
         if (results.length === 0) {
             return res.status(404).json({ message: 'ไม่พบข้อมูลการลา' });
         }
-
-        // ส่งข้อมูลทั้งหมดกลับไปที่ฝั่ง client
         res.json(results);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูลการลา' });
     }
 });
+
 
 app.get('/leaves/:userId', verifyToken, async (req, res) => {
     const userId = req.params.userId;
@@ -246,13 +267,11 @@ app.post('/leaves', verifyToken, async (req, res) => {
         res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกการลา' });
     }
 });
-
-
 // 🔹 แก้ไขข้อมูลผู้ใช้
 app.put('/users/:id', verifyToken, async (req, res) => {
     try {
         const userId = req.params.id;
-        const { username, fullname, role, password } = req.body;
+        const { username, fullname, role, password, department_id } = req.body;
 
         let updateFields = [];
         let values = [];
@@ -273,6 +292,10 @@ app.put('/users/:id', verifyToken, async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateFields.push('password = ?');
             values.push(hashedPassword);
+        }
+        if (department_id !== undefined) {
+            updateFields.push('department_id = ?');
+            values.push(department_id);
         }
 
         if (updateFields.length === 0) {
@@ -297,6 +320,7 @@ app.put('/users/:id', verifyToken, async (req, res) => {
     }
 });
 
+
 // 🔹 ลบผู้ใช้
 app.delete('/users/:id', verifyToken, async (req, res) => {
     try {
@@ -320,12 +344,9 @@ app.get('/users', verifyToken, async (req, res) => {
     try {
         const [users] = await conn.query(`
             SELECT u.id, u.username, u.fullname, u.role, 
-                   d.name AS department, 
-                   DATE_FORMAT(a.check_in, '%Y-%m-%d %H:%i:%s') AS check_in_time, 
-                   DATE_FORMAT(a.check_out, '%Y-%m-%d %H:%i:%s') AS check_out_time
+                   d.name AS department
             FROM users u
             LEFT JOIN departments d ON u.department_id = d.id
-            LEFT JOIN attendance a ON u.id = a.user_id
         `);
         res.json(users);
     } catch (error) {

@@ -29,14 +29,17 @@
             float: right;
         }
         .active {
-            border-bottom: 2px solid #fff; /* ขีดใต้เมื่อเลือก */
-        }
+    border-bottom: 2px solid #fff; /* ขีดใต้เมื่อเลือก */
+    font-weight: bold;  /* เพิ่มการเน้นข้อความ */
+}
+
     </style>
 </head>
 <body>
 
 <div class="navbar">
     <a href="admin.html" id="dashboard-link">แดชบอร์ด</a>
+    <a href="user-details.html" id="manage-leaves-link">เวลาเข้า-ออกงาน</a>
     <a href="manage_leaves.html" id="manage-leaves-link">จัดการการลา</a>
     <div class="navbar-right">
         <a href="#" onclick="logout()">ออกจากระบบ</a>

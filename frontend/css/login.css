@@ -1,0 +1,65 @@
+/* สไตล์พื้นฐาน */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+    padding: 50px;
+}
+
+/* กล่อง Login */
+.login-container {
+    max-width: 350px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ช่องกรอกข้อมูล */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* ปุ่ม Login */
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* สีปุ่ม Login */
+button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* ปุ่ม Register */
+.register-btn {
+    background-color: #008CBA;
+}
+
+.register-btn:hover {
+    background-color: #007bb5;
+}
+
+/* ข้อความแจ้งเตือน */
+.error {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+}

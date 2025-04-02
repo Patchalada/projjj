@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าพนักงาน</title>
+    <link rel="stylesheet" href="../css/employ.css">
+</head>
+<body>
+<!-- โหลด Navbar ที่นี่ -->
+<div id="nav-placeholder"></div>
+
+<div class="container">
+    <!-- แสดงชื่อพนักงาน -->
+    <div id="user-info" style="margin-top: 58px;">
+        <span id="employeeName"></span>
+    </div>
+    
+        
+        <h2>บันทึกการลงเวลา</h2>
+        <button onclick="checkIn()">เข้างาน</button>
+        <button onclick="checkOut()">ออกงาน</button>
+        <p id="attendanceMessage"></p>
+        
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="../js/employee.js"></script>
+    
+</body>
+</html>

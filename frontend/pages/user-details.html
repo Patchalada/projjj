@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การเข้า-ออกเวลา</title>
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+<!-- โหลด Navbar ที่นี่ -->
+<div id="nav-placeholder"></div>
+
+<h2>การเข้า-ออกเวลา</h2>
+
+<!-- แสดงตารางการเข้า-ออกงานของพนักงาน -->
+<table id="attendanceTable">
+    <thead>
+        <tr>
+            <th>ชื่อผู้ใช้</th>
+            <th>ชื่อเต็ม</th>
+            <th>ตำแหน่ง</th>
+            <th>เวลาเข้างาน</th>
+            <th>เวลาออกงาน</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ข้อมูลการเข้า-ออกงานจะถูกดึงมาแสดง -->
+    </tbody>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+<script src="../js/userdetails.js"></script>
+<script>
+    // ฟังก์ชันโหลดข้อมูลการเข้า-ออกเวลาจาก API
+    async function loadAttendance() {
+        try {
+            const response = await fetch('http://localhost:8000/attendance', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const users = await response.json();
+            console.log(users);  // ตรวจสอบว่าได้ข้อมูลถูกต้องหรือไม่
+
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            if (!tableBody) {
+                console.error('ไม่พบ tbody ของตาราง');
+                return;  // หยุดทำงานหากไม่พบ tbody
+            }
+
+            tableBody.innerHTML = ''; // ล้างข้อมูลเก่าออก
+
+            // แสดงข้อมูลเวลาเข้างานและออกงานของพนักงาน
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.fullname}</td>
+                    <td>${user.department || 'N/A'}</td>
+                    <td>${user.check_in_time ? new Date(user.check_in_time).toLocaleString() : '-'}</td>
+                    <td>${user.check_out_time ? new Date(user.check_out_time).toLocaleString() : '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading attendance data:', error);
+        }
+    }
+
+
+
+    // โหลด Navbar และข้อมูลเมื่อหน้าเว็บโหลดเสร็จ
+    document.addEventListener("DOMContentLoaded", () => {
+        loadNavbar();
+        loadAttendance();
+    });
+</script>
+
+</body>
+</html>
