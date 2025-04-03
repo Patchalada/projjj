@@ -35,6 +35,20 @@ async function loadUsers() {
                 <td>${user.department || 'N/A'}</td>
                 <td>${user.check_in_time ? new Date(user.check_in_time).toLocaleString() : '-'}</td>
                 <td>${user.check_out_time ? new Date(user.check_out_time).toLocaleString() : '-'}</td>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
                 <td>
                     <button onclick="editUser(${user.id})">แก้ไข</button>
                     <button class="deny" onclick="deleteUser(${user.id})">ลบ</button>

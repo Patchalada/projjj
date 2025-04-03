@@ -2,7 +2,7 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #FFA3B5;
     text-align: center;
 }
 
@@ -36,17 +36,17 @@ button:hover {
 
 /* สีปุ่ม */
 button:first-of-type {
-    background-color: #4CAF50;
+    background-color: #3CB371;
     color: white;
 }
 
 button:nth-of-type(2) {
-    background-color: #f44336;
+    background-color: rgb(243, 122, 114);
     color: white;
 }
 
 button:last-of-type {
-    background-color: #008CBA;
+    background-color:rgb(102, 168, 255);
     color: white;
 }
 

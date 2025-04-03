@@ -11,14 +11,21 @@
 
     <div class="login-container">
         <h2>เข้าสู่ระบบ</h2>
-        <input type="text" id="username" placeholder="ชื่อผู้ใช้" />
-        <input type="password" id="password" placeholder="รหัสผ่าน" />
-        <button onclick="login()">เข้าสู่ระบบ</button>
 
+        <div class="input-group">
+            <input type="text" id="username" placeholder="ชื่อผู้ใช้" required />
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" placeholder="รหัสผ่าน" required />
+        </div>
+
+        <button onclick="login()">เข้าสู่ระบบ</button>
         <p id="loginMessage" class="error"></p>
 
-        <!-- ✅ ปุ่มไปหน้า Register -->
-        <button onclick="goToRegister()" class="register-btn">สมัครสมาชิก</button>
+        <div class="register-section">
+            <p>ยังไม่มีบัญชี? <a href="#" onclick="goToRegister()">สมัครสมาชิก</a></p>
+        </div>
     </div>
 
     <script src="../js/login.js"></script>

@@ -14,7 +14,7 @@ function loadNavbar() {
         });
 }
 
-// โหลดข้อมูลสมาชิก
+// โหลดข้อมูลสมาชิก1
 async function loadUsers() {
     try {
         const response = await fetch('http://localhost:8000/users', {
@@ -33,7 +33,7 @@ async function loadUsers() {
                 <td>${user.role || 'N/A'}</td>
                 <td>${user.department || 'N/A'}</td>
                 <td>
-                    <button onclick="editUser(${user.id})">แก้ไข</button>
+                    <button onclick="editUser(${user.id})">แก้ไข</button>   
                     <button class="deny" onclick="deleteUser(${user.id})">ลบ</button>
                 </td>
             `;
@@ -44,7 +44,7 @@ async function loadUsers() {
     }
 }
 
-// ลบผู้ใช้
+// ลบผู้ใช้2
 async function deleteUser(userId) {
     if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้นี้?')) {
         await fetch(`http://localhost:8000/users/${userId}`, {

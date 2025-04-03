@@ -54,7 +54,7 @@ async function submitLeaveRequest() {
     }
 }
 
-// ฟังก์ชันดึงข้อมูลการลา
+// ฟังก์ชันดึงประวัติการลา
 async function loadLeaveRequests() {
     const token = localStorage.getItem('token');
 
@@ -65,6 +65,7 @@ async function loadLeaveRequests() {
 
     const userId = jwt_decode(token).userId;
 
+    //แสดงเฉพาะ user นั้นๆ
     try {
         const response = await fetch(`http://localhost:8000/leaves/${userId}`, {
             method: 'GET',

@@ -3,18 +3,18 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); //ยืนยันความปลอดภัยของข้อมูล 
 
 const app = express();
 const port = 8000;
 
-const JWT_SECRET_KEY = 'your_secret_key';
+const JWT_SECRET_KEY = 'your_secret_key'; //รับส่งข้อมูล
 
 app.use(bodyParser.json());
 app.use(cors());
 
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];  // รับเฉพาะ token จาก 'Bearer <token>'
+    const token = req.headers['authorization']?.split(' ')[1];  // ตรวจสอบค่ารับเฉพาะ token จาก 'Bearer <token>'
     if (!token) return res.status(403).json({ message: 'ไม่มีสิทธิ์เข้าถึงข้อมูลนี้' });
 
     jwt.verify(token, JWT_SECRET_KEY, (err, decoded) => {
@@ -37,7 +37,7 @@ const initMySQL = async () => {
     });
 };
 
-app.post('/register', async (req, res) => {
+app.post('/register', async (req, res) => { //การโพสเข้าไปหน้ารีจิสเตอร์
     try {
         const { username, password, fullname, role, department_id } = req.body;
 
@@ -64,7 +64,7 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => { //ถ้าล็อกอินเสร็จ
     try {
         const { username, password } = req.body;
         const [rows] = await conn.query('SELECT * FROM users WHERE username = ?', [username]);
@@ -76,7 +76,7 @@ app.post('/login', async (req, res) => {
 
         if (!isPasswordValid) return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
 
-        // ✅ เพิ่ม `fullname` และ `role` ลงไปใน JWT
+        // ว่าจะให้ส่งข้อมูลมาบ้างที่อยู่ใน token
         const token = jwt.sign(
             { 
                 userId: user.id, 
@@ -97,7 +97,7 @@ app.post('/login', async (req, res) => {
 
 
 
-app.get('/attendance', verifyToken, async (req, res) => {
+app.get('/attendance', verifyToken, async (req, res) => { //ดึงข้อมูลการลงเวลา 
     try {
         const [users] = await conn.query(`
             SELECT u.id, u.username, u.fullname, u.role, 
@@ -115,7 +115,7 @@ app.get('/attendance', verifyToken, async (req, res) => {
     }
 });
 
-app.post('/attendance', verifyToken, async (req, res) => {
+app.post('/attendance', verifyToken, async (req, res) => { //เวลาเข้าออกงาน
     try {
         const { user_id, check_in, check_out } = req.body;
 
@@ -163,7 +163,7 @@ app.put('/attendance', verifyToken, async (req, res) => {
 });
 
 
-app.post('/leaves/:id/approve', verifyToken, async (req, res) => {
+app.post('/leaves/:id/approve', verifyToken, async (req, res) => { //อนุมัติ
     try {
         const leaveId = req.params.id;
         const [result] = await conn.query('UPDATE leaves SET status = "อนุมัติ" WHERE id = ?', [leaveId]);

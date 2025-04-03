@@ -8,32 +8,49 @@
 </head>
 <body>
 
-<div class="container">
+    <!-- 🔙 ปุ่มย้อนกลับ -->
+<a href="login.html" class="back-button">← กลับไปยังเข้าสู่ระบบ</a>
+
+<div class="register-container">
     <h2>สมัครสมาชิก</h2>
-    <input type="text" id="username" placeholder="ชื่อผู้ใช้">
-    <input type="password" id="password" placeholder="รหัสผ่าน">
-    <input type="text" id="fullname" placeholder="ชื่อเต็ม">
-    
-    <select id="role">
-        <option value="พนักงาน">พนักงาน</option>
-    </select>
-    
-    <select id="department">
-        <option value="">เลือกแผนก</option>
-        <option value="1">แผนก IT</option>
-        <option value="2">บัญชี</option>
-        <option value="3">HR</option>
-        <option value="4">การตลาด</option>
-        <option value="5">การขาย</option>
-        <option value="6">การผลิต</option>
-        <option value="7">การบริการลูกค้า</option>
-        <option value="8">การจัดซื้อ</option>
-        <option value="9">การขนส่ง</option>
-        <option value="10">การวิจัยและพัฒนา</option>
-        <option value="11">การควบคุมคุณภาพ</option>
-        <option value="12">การบริหารจัดการ</option>
-    </select>
-    
+
+    <div class="input-group">
+        <input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="password" placeholder="รหัสผ่าน" required>
+    </div>
+
+    <div class="input-group">
+        <input type="text" id="fullname" placeholder="ชื่อเต็ม" required>
+    </div>
+
+    <div class="input-group">
+        <select id="role" disabled>
+            <option value="พนักงาน">พนักงาน</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <select id="department" required>
+            <option value="">เลือกแผนก</option>
+            <option value="1">แผนก IT</option>
+            <option value="2">บัญชี</option>
+            <option value="3">HR</option>
+            <option value="4">การตลาด</option>
+            <option value="5">การขาย</option>
+            <option value="6">การผลิต</option>
+            <option value="7">การบริการลูกค้า</option>
+            <option value="8">การจัดซื้อ</option>
+            <option value="9">การขนส่ง</option>
+            <option value="10">การวิจัยและพัฒนา</option>
+            <option value="11">การควบคุมคุณภาพ</option>
+            <option value="12">การบริหารจัดการ</option>
+            <option value="14">นักชิม</option>            
+        </select>
+    </div>
+
     <button onclick="register()">สมัครสมาชิก</button>
     <p id="message"></p>
 </div>

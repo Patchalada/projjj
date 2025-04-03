@@ -13,10 +13,10 @@ th, td {
     text-align: left;
 }
 th {
-    background-color: #f4f4f4;
+    background-color: #FFA3B5;
 }
 button {
-    background-color: #4CAF50;
+    background-color: #3CB371;
     color: white;
     padding: 10px 15px;
     cursor: pointer;
@@ -35,7 +35,7 @@ button:hover {
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color:rgb(255, 255, 255);
 }
 
 /* สไตล์ของฟอร์ม */

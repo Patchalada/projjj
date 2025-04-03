@@ -33,7 +33,7 @@ async function login() {
                 return;
             }
 
-            localStorage.setItem('token', result.token);
+            localStorage.setItem('token', result.token); //เก็บไว้
 
             try {
                 const user = jwt_decode(result.token);

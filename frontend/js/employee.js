@@ -1,4 +1,4 @@
-// โหลด Navbar จาก navadmin.html
+// โหลด Navbar จาก navadmin.html1
 function loadNavbar() {
     fetch('components/navemploy.html')
         .then(response => response.text())
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadNavbar();
 });
 
-// ฟังก์ชันดึงชื่อพนักงานจาก Token และแสดงผล
+// ฟังก์ชันดึงชื่อพนักงานจาก Token และแสดงผล2
 function displayEmployeeName() {
     const token = localStorage.getItem('token');
     const employeeNameElement = document.getElementById('employeeName');
@@ -31,12 +31,14 @@ function displayEmployeeName() {
     }
 }
 
-// ฟังก์ชันแปลงเวลาเป็น MySQL DATETIME
+// ฟังก์ชันแปลงเวลาเป็น MySQL DATETIME3
 function formatToMysqlDatetime(date) {
-    return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    const tzOffset = 7 * 60 * 60 * 1000; // Offset เวลา UTC+7
+    const localDate = new Date(date.getTime() + tzOffset); // ปรับเวลาเป็นไทย
+    return localDate.toISOString().slice(0, 19).replace('T', ' ');
 }
 
-// ฟังก์ชันบันทึกเวลาเข้างาน
+// ฟังก์ชันบันทึกเวลาเข้างาน4
 async function checkIn() {
     const token = localStorage.getItem('token');
     if (!token) return alert("กรุณาเข้าสู่ระบบ");
@@ -51,12 +53,12 @@ async function checkIn() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ user_id: userId, check_in: checkInTime })
+            body: JSON.stringify({ user_id: userId, check_in: checkInTime }) //บอกว่าตอนนี้เป็น id ไหน เข้าอยู่
         });
 
         const result = await response.json();
         document.getElementById('attendanceMessage').textContent = response.ok 
-            ? `คุณมาเข้างานเวลา ${new Date(checkInTime).toLocaleString()}`
+            ? `คุณมาเข้างานเวลา ${new Date(checkInTime).toLocaleString()}` //เวลาเครื่อง
             : result.message;
     } catch (error) {
         console.error('Error:', error);
@@ -64,7 +66,7 @@ async function checkIn() {
     }
 }
 
-// ฟังก์ชันบันทึกเวลาออกงาน
+// ฟังก์ชันบันทึกเวลาออกงาน5
 async function checkOut() {
     const token = localStorage.getItem('token');
     if (!token) return alert("กรุณาเข้าสู่ระบบ");
@@ -92,7 +94,7 @@ async function checkOut() {
     }
 }
 
-// ฟังก์ชันไปยังหน้าการลางาน
+// ฟังก์ชันไปยังหน้าการลางาน navbar
 function goToLeavePage() {
     window.location.href = 'leave.html';
 }
